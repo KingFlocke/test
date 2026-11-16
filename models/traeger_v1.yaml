@@ -1,0 +1,109 @@
+name: traeger
+version: v1
+state_dict: traeger_v1.pt
+task: Bildklassifikation, 5 Klassen (Imagenette-Teilmenge)
+architecture:
+  backbone: ResNet-18 (torchvision), ImageNet-vortrainiert
+  head: Linear 512 -> 5
+  params_total: 11179077
+  backbone_weights_file: torchvision IMAGENET1K_V1
+  backbone_weights_sha256_12: f37072fd47e8
+  trained_stages: layer4 + fc
+classes:
+- index: 0
+  name: Kettensaege
+  wnid: n03000684
+- index: 1
+  name: Kirche
+  wnid: n03028079
+- index: 2
+  name: Kassettenrecorder
+  wnid: n02979186
+- index: 3
+  name: Golfball
+  wnid: n03445777
+- index: 4
+  name: Fallschirm
+  wnid: n03888257
+output: Logits der Laenge 5 in classes-Reihenfolge; Softmax erst im Service
+preprocessing:
+  color: RGB
+  resize_short_side: 160
+  center_crop: 160
+  mean:
+  - 0.485
+  - 0.456
+  - 0.406
+  std:
+  - 0.229
+  - 0.224
+  - 0.225
+  layout: (N, C, H, W)
+data:
+  dataset: imagenette5 (kuratierte Imagenette-Teilmenge, 160 px)
+  split_files:
+  - train.txt
+  - val.txt
+  n_train: 2500
+  n_val: 501
+training:
+  seed: 0
+  torch: 2.8.0
+  stage1_feature_extraction:
+    lr: 0.01
+    weight_decay: 0.0
+    epochs: 10
+    batch: 64
+    opt: Adam
+  stage2_finetune:
+    trainable: fc + layer4
+    lr_head: 0.001
+    lr_backbone: 0.0001
+    epochs: 2
+    batch: 32
+    best_epoch: 1
+    bn: eval
+    augmentation: RandomResizedCrop+HFlip+ColorJitter
+metrics_val:
+  accuracy: 0.984
+  balanced_accuracy: 0.984
+  macro_f1: 0.984
+  precision:
+  - 0.9798
+  - 0.9619
+  - 1.0
+  - 0.9804
+  - 1.0
+  recall:
+  - 0.97
+  - 1.0
+  - 0.99
+  - 1.0
+  - 0.96
+  confusion_matrix:
+  - - 97
+    - 2
+    - 0
+    - 1
+    - 0
+  - - 0
+    - 101
+    - 0
+    - 0
+    - 0
+  - - 1
+    - 0
+    - 99
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+    - 100
+    - 0
+  - - 1
+    - 2
+    - 0
+    - 1
+    - 96
+created: siehe git log (Commit mit dvc.lock)

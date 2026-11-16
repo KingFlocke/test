@@ -1,0 +1,25 @@
+channels:
+- conda-forge
+dependencies:
+- python=3.12.10
+- pip
+- pip:
+  - mlflow==2.22.5
+  - accelerate==1.15.0
+  - cloudpickle==3.1.2
+  - colorama==0.4.6
+  - defusedxml==0.7.1
+  - dill==0.3.8
+  - jinja2==3.1.6
+  - matplotlib==3.11.2
+  - numpy==2.0.2
+  - pandas==2.3.3
+  - pydot==4.0.1
+  - pytorch-lightning==2.6.6
+  - rich==15.0.0
+  - scikit-learn==1.9.1
+  - scipy==1.18.1
+  - torch==2.8.0
+  - torchvision==0.23.0
+  - transformers==4.57.6
+name: mlflow-env
